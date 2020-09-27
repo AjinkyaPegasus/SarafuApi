@@ -1,0 +1,50 @@
+FROM jenkins/jenkins	
+
+MAINTAINER Ajinkya Gangawane
+
+# JMeter version
+ARG JMETER_VERSION=5.3
+
+USER root
+
+# Install few utilities
+RUN apt-get clean && \
+    apt-get update && \
+    apt-get -qy install \
+                wget \
+                telnet \
+                iputils-ping \
+                unzip
+
+RUN apt-get update && \
+apt-get -y install apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg2 \
+    software-properties-common && \
+curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg > /tmp/dkey; apt-key add /tmp/dkey && \
+add-apt-repository \
+    "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
+    $(lsb_release -cs) \
+    stable" && \
+apt-get update && \
+apt-get -y install docker-ce
+RUN apt-get install -y docker-ce
+RUN usermod -a -G docker jenkins
+
+# Install JMeter
+RUN   mkdir /jmeter \
+      && cd /jmeter/ \
+      && wget http://apachemirror.wuchna.com//jmeter/binaries/apache-jmeter-$JMETER_VERSION.zip \
+      && unzip apache-jmeter-$JMETER_VERSION.zip \
+      && rm apache-jmeter-$JMETER_VERSION.zip
+
+# Set JMeter Home
+ENV JMETER_HOME /jmeter/apache-jmeter-$JMETER_VERSION/
+
+# Add JMeter to the Path
+ENV PATH $JMETER_HOME/bin:$PATH
+
+USER jenkins
+
+ADD jmeterExecuteShellFile.sh /jmeter
