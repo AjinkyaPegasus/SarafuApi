@@ -1,5 +1,5 @@
-jmeter -n \
-	-t= *.jmx\
+sh jmeter -n \
+	-t= SarafuApi.jmx\
 	-j= results.log\
 	-l= results.xml\
 	-Jjmeter.sava.saveservice.print_field_names=true \
@@ -7,11 +7,8 @@ jmeter -n \
 	-Jjmeter.save.saveservice.response_data=true \
 	-Jjmeter.save.saveservice.samplerData=true \
 	-JnumberOfRequestPerClient=1 \
-	-JnumberOfClient=1 \
-	-JrampUpPeriod=1 \
-	-Jtimeout=2000 \
-	-Jhost= \
-	-Jport=3000 \
-	-JuserName = \
-	-JPassword = \
+	-Jusername="+255-710100099" \
+	-Jpassword="12345" \
+	-JnewPassword="1234" \
+	-ISO="TZA" 
 	
